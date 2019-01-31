@@ -1,0 +1,16 @@
+{
+	"miniprogramRoot": "dist/",
+	"projectname": "myApp",
+	"description": "我的第一个微信小程序",
+	"appid": "wxfd2b5da69dede20d",
+	"cloudfunctionRoot": "./functions/",
+	"setting": {
+		"urlCheck": true,
+		"es6": false,
+		"postcss": false,
+		"minified": false,
+		"newFeature": true
+	},
+	"compileType": "miniprogram",
+	"condition": {}
+}
