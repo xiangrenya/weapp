@@ -77,3 +77,7 @@ wx.cloud.callFunction({
 - [taro-ui](https://taro-ui.aotu.io/)
 - [Gitter - 高颜值 GitHub 小程序客户端诞生记](https://juejin.im/post/5c4c738ce51d4525211c129b)
 - [github-trending-api](https://github.com/huchenme/github-trending-api)
+
+## 截图示例
+
+![image](./doc/demo.jpeg)
