@@ -4,19 +4,18 @@ import { observable, action } from 'mobx';
 class Trending {
   @observable current = 0;
   @observable repositories = [];
-  @observable lang = 'javascript';
-  @observable since = 'daily'; // 'daily, weekly, monthly'
-
+  @observable since = 'daily';
   @action
-  init = () => {
+  initData = (since, language) => {
+    this.since = since;
     Taro.showLoading({ title: 'loading...' });
     wx.cloud
       .callFunction({
         name: 'getTrending',
         data: {
           type: 'repositories',
-          language: this.lang,
-          since: this.since
+          language: language,
+          since: since
         }
       })
       .then(
@@ -27,13 +26,8 @@ class Trending {
       )
       .catch(err => {
         Taro.hideLoading();
-        console.log(err);
+        console.log('错误：调用 getTrending 云函数失败', err);
       });
-  };
-
-  @action
-  handleSearch = () => {
-    console.log('searching');
   };
 
   @action

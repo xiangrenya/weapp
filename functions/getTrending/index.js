@@ -1,6 +1,7 @@
 // 云函数入口文件
 const cloud = require('wx-server-sdk');
 const { getRepositories } = require('./get');
+const { to } = require('./utils');
 
 cloud.init();
 
@@ -8,67 +9,58 @@ const db = cloud.database();
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  const { type, language = 'unknown', since = 'daily' } = event;
+  const {
+    type = 'repositories',
+    language = 'unknown',
+    since = 'daily'
+  } = event;
+  const cacheKey = `${type}::${language}::${since}`;
   if (type === 'repositories') {
-    const cacheKey = `repositories::${language}::${since}`;
+    const [err1, content] = await to(getFreshCache(cacheKey));
+    if (err1) return console.log('错误：查询数据库缓存失败');
+    if (content) {
+      console.log('成功：数据来源于数据库缓存');
+      return content;
+    }
 
-    const content = await getFreshCacheData(cacheKey);
-    if (content) return content;
+    const [err2, repositories] = await to(getRepositories(language, since));
+    if (err2) return console.log('错误：爬虫 Github Trending 网页失败');
 
-    const repositories = await getRepositories(language, since);
-    console.log('get data from github trending', repositories.length);
-
-    await insertDB(cacheKey, repositories);
-
+    const [err3] = await to(insertCacheToDB(cacheKey, repositories));
+    if (err3) return console.log('错误：缓存插入数据库失败');
+    
+    console.log('成功：数据来源于 Github Trending 网页');
     return repositories;
   }
 };
 
-// 获取新鲜的缓存数据
-async function getFreshCacheData(cacheKey) {
-  let result = null;
-  const cacheData = await db
+function getFreshCache(cacheKey) {
+  return db
     .collection('repositories')
     .where({
       cacheKey: cacheKey
     })
     .orderBy('cacheDate', 'desc')
     .get()
-    .catch(err => {
-      console.log('getFreshCacheData error: ', err);
+    .then(cacheData => {
+      if (cacheData.data.length) {
+        // 半小时的缓存
+        const isCacheFresh = !!(
+          new Date().getTime() - cacheData.data[0].cacheDate <
+          1800 * 1000
+        );
+        if (isCacheFresh) return cacheData.data[0].content;
+      }
+      return null;
     });
-
-  // 30分钟有效期
-  if (cacheData.data.length) {
-    const isFresh = !!(
-      new Date().getTime() <
-      cacheData.data[0].cacheDate <
-      1800 * 1000
-    );
-
-    if (isFresh) {
-      result = cacheData.data[0].content;
-      console.log('get data from db', cacheData.data[0].content.length);
-    }
-  }
-
-  return result;
 }
 
-// 缓存数据到数据库
-function insertDB(cacheKey, content) {
-  db.collection('repositories')
-    .add({
-      data: {
-        cacheDate: new Date().getTime(),
-        cacheKey: cacheKey,
-        content
-      }
-    })
-    .then(result => {
-      console.log('insert data into db successfully');
-    })
-    .catch(err => {
-      console.log('insertDB error: ', err);
-    });
+function insertCacheToDB(cacheKey, content) {
+  return db.collection('repositories').add({
+    data: {
+      cacheDate: new Date().getTime(),
+      cacheKey: cacheKey,
+      content
+    }
+  });
 }

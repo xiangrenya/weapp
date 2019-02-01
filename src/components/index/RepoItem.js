@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro';
 import PropTypes from 'prop-types';
 import { View } from '@tarojs/components';
 import { AtIcon } from 'taro-ui';
-
+import { toThousands } from '../../utils/index';
 import './repo.less';
 
 export default class RepoItem extends Component {
@@ -20,11 +20,10 @@ export default class RepoItem extends Component {
     const { repo, since } = this.props;
     if (!repo) return null;
     const mapSince = {
-      daily: 'stars today',
-      weekly: 'stars this week',
-      monthly: 'stars this month'
+      daily: 'today',
+      weekly: 'this week',
+      monthly: 'this month'
     };
-    const currentPeriodStars = repo.currentPeriodStars + ' ' + mapSince[since];
     return (
       <View className="content">
         <View className="repo-title">{repo.title}</View>
@@ -42,13 +41,8 @@ export default class RepoItem extends Component {
             </View>
           )}
           <View className="number-item">
-            <AtIcon
-              prefixClass="fa"
-              value="star"
-              size="14"
-              color="#666666"
-            />
-            <View className="number-title">{repo.stars}</View>
+            <AtIcon prefixClass="fa" value="star" size="14" color="#666666" />
+            <View className="number-title">{toThousands(repo.stars)}</View>
           </View>
           <View className="number-item">
             <AtIcon
@@ -57,17 +51,14 @@ export default class RepoItem extends Component {
               size="14"
               color="#666666"
             />
-            <View className="number-title">{repo.forks}</View>
+            <View className="number-title">{toThousands(repo.forks)}</View>
           </View>
         </View>
         <View className="today-view">
-          <AtIcon 
-            prefixClass="fa"
-            value="star"
-            size="14"
-            color="#66666"
-          />
-          <View className="today-title">{currentPeriodStars}</View>
+          <AtIcon prefixClass="fa" value="star" size="14" color="#66666" />
+          <View className="today-title">
+            {toThousands(repo.currentPeriodStars) + ` ${mapSince[since]}`}
+          </View>
         </View>
       </View>
     );

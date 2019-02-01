@@ -3,6 +3,7 @@ import { View, Button, Text } from '@tarojs/components';
 import { observer, inject } from '@tarojs/mobx';
 import { AtTabs, AtTabsPane, AtSearchBar } from 'taro-ui';
 import IndexList from '../../components/index/IndexList';
+import Range from '../../components/index/Range';
 import './index.less';
 
 @inject('trendingStore')
@@ -21,7 +22,7 @@ class Index extends Component {
 
   componentDidMount() {
     wx.cloud.init();
-    this.props.trendingStore.init();
+    this.props.trendingStore.initData('daily', 'all');
   }
 
   componentWillUnmount() {}
@@ -30,15 +31,21 @@ class Index extends Component {
 
   componentDidHide() {}
 
+  handlePickerChange = (since, language) => {
+    this.props.trendingStore.initData(since, language);
+  };
+
   render() {
     const {
-      trendingStore: { current, since, repositories, handleSearch, handleSwitchTab }
+      trendingStore: {
+        current,
+        since,
+        repositories,
+        handleSwitchTab
+      }
     } = this.props;
     return (
       <View className="index">
-        {/* <View className="search_bg" onClick={handleSearch}>
-          <AtSearchBar disabled={true} placeholder="Search" actionName="" />
-        </View> */}
         <AtTabs
           swipeable={false}
           animated={true}
@@ -50,9 +57,10 @@ class Index extends Component {
             <IndexList type={0} list={repositories.toJS()} since={since} />
           </AtTabsPane>
           <AtTabsPane current={current} index={1}>
-            {<IndexList type={1} list={[]} since={since} />}            
+            {<IndexList type={1} list={[]} since={since} />}
           </AtTabsPane>
         </AtTabs>
+        <Range onChange={this.handlePickerChange} />
       </View>
     );
   }

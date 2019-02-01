@@ -26,11 +26,14 @@ function iterateRepo($repo) {
     .find('.py-1 p')
     .text()
     .trim();
-  const lang = $repo
-    .find('[itemprop=programmingLanguage]')
-    .text()
-    .trim();
-  const langColor = $repo.find('.repo-language-color').css('background-color');
+  // 有些仓库没有显示语言，会出现 undefined 的错误
+  let lang = null;
+  let langColor = null;
+  const $lang = $repo.find('[itemprop=programmingLanguage]');
+  if ($lang.length) {
+    lang = $lang.text().trim();
+    langColor = $repo.find('.repo-language-color').css('background-color');
+  }
   const stars = parseInt(
     $repo
       .find(`[href="${relativeUrl}/stargazers"]`)
