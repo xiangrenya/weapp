@@ -1,5 +1,14 @@
-exports.toThousands = function(val) {
-  const str = parseFloat(val);
-  const reg = /(\d{1,3})(?=(\d{3})+(?:\.))/g;
-  return str.replace(reg, '$1,');
+exports.toThousands = function(num) {
+  if (typeof num === 'number') {
+    num = num.toString();
+  }
+  let result = '';
+  while (num.length > 3) {
+    result = ',' + num.slice(-3) + result;
+    num = num.slice(0, num.length - 3);
+  }
+  if (num) {
+    result = num + result;
+  }
+  return result;
 };

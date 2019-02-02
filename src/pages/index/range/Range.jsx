@@ -1,8 +1,8 @@
 import Taro, { Component } from '@tarojs/taro';
 import PropTypes from 'prop-types';
 import { View } from '@tarojs/components';
-import { dateRanges, languages } from '../../utils/dict';
-import './range.less';
+import { dateRanges, languages } from '../../../utils/dict';
+import './styles.less';
 
 export default class RepoItem extends Component {
   static propTypes = {

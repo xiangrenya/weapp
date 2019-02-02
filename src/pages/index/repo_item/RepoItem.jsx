@@ -2,8 +2,8 @@ import Taro, { Component } from '@tarojs/taro';
 import PropTypes from 'prop-types';
 import { View } from '@tarojs/components';
 import { AtIcon } from 'taro-ui';
-import { toThousands } from '../../utils/index';
-import './repo.less';
+import { toThousands } from '../../../utils/index';
+import './styles.less';
 
 export default class RepoItem extends Component {
   static propTypes = {
