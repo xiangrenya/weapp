@@ -19,7 +19,7 @@ const store = {
 
 class App extends Component {
   config = {
-    pages: ['pages/index/index', 'pages/activity/index', 'pages/me/index'],
+    pages: ['pages/trending/index', 'pages/activity/index', 'pages/me/index'],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
@@ -29,7 +29,7 @@ class App extends Component {
     tabBar: {
       list: [
         {
-          pagePath: 'pages/index/index',
+          pagePath: 'pages/trending/index',
           text: 'Trending',
           iconPath: './assets/images/tab_trending.png',
           selectedIconPath: './assets/images/tab_trending_selected.png'

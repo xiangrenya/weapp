@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text } from '@tarojs/components';
 import { observer, inject } from '@tarojs/mobx';
 import { AtTabs, AtTabsPane } from 'taro-ui';
-import IndexList from './index_list/IndexList';
+import TrendingList from './trending_list/TrendingList';
 import Range from './range/Range';
 import './index.less';
 
@@ -53,10 +53,10 @@ class Index extends Component {
           onClick={this.handleSwitchTab}
         >
           <AtTabsPane current={current} index={0}>
-            <IndexList type={0} list={repositories.toJS()} since={since} />
+            <TrendingList type={0} list={repositories.toJS()} since={since} />
           </AtTabsPane>
           <AtTabsPane current={current} index={1}>
-            {<IndexList type={1} list={developers.toJS()} since={since} />}
+            <TrendingList type={1} list={developers.toJS()} since={since} />
           </AtTabsPane>
         </AtTabs>
         <Range onChange={this.handlePickerChange} />
