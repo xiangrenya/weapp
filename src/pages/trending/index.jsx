@@ -31,6 +31,10 @@ class Index extends Component {
 
   componentDidHide() {}
 
+  onPullDownRefresh() {
+    this.props.trendingStore.initData();
+  }
+
   handlePickerChange = (language, since) => {
     this.props.trendingStore.refresh(language, since);
   };

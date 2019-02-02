@@ -1,5 +1,8 @@
 import Taro from '@tarojs/taro';
 import { observable, action, computed } from 'mobx';
+import { to } from '../utils/index';
+// support es7 async/await
+const regeneratorRuntime = require('../utils/runtime');
 
 class Trending {
   @observable type = 'repositories';
@@ -13,10 +16,11 @@ class Trending {
   }
 
   @action
-  initData = () => {
+  initData = async () => {
     Taro.showLoading({ title: 'loading...' });
-    wx.cloud
-      .callFunction({
+
+    const [err, res] = await to(
+      wx.cloud.callFunction({
         name: 'getTrending',
         data: {
           type: this.type,
@@ -24,20 +28,18 @@ class Trending {
           since: this.since
         }
       })
-      .then(
-        action(res => {
-          if (this.type === 'repositories') {
-            this.repositories = res.result;
-          } else {
-            this.developers = res.result;
-          }
-          Taro.hideLoading();
-        })
-      )
-      .catch(err => {
-        Taro.hideLoading();
-        console.log('错误：调用 getTrending 云函数失败', err);
-      });
+    );
+
+    Taro.hideLoading();
+    Taro.stopPullDownRefresh();
+
+    if (err) return console.log('错误：调用 getTrending 云函数失败', err);
+
+    if (this.type === 'repositories') {
+      this.repositories = res.result;
+    } else {
+      this.developers = res.result;
+    }
   };
 
   @action refresh(language, since) {

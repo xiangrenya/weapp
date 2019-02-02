@@ -1,4 +1,4 @@
-exports.toThousands = function(num) {
+export function toThousands(num) {
   if (typeof num === 'number') {
     num = num.toString();
   }
@@ -11,4 +11,13 @@ exports.toThousands = function(num) {
     result = num + result;
   }
   return result;
-};
+}
+
+export function to(promise) {
+  return promise
+    .then(result => [null, result])
+    .catch(err => {
+      console.log(err);
+      return [err, null];
+    });
+}

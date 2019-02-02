@@ -21,7 +21,7 @@ class App extends Component {
   config = {
     pages: ['pages/trending/index', 'pages/activity/index', 'pages/me/index'],
     window: {
-      backgroundTextStyle: 'light',
+      backgroundTextStyle: 'dark',
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
       navigationBarTextStyle: 'black'
