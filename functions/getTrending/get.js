@@ -1,10 +1,10 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
 
-const BASE_URL = 'https://github.com';
+const GITHUB_URL = 'https://github.com';
 
-async function getRepositories(language = 'javascript', since = 'daily') {
-  const url = `${BASE_URL}/trending/${language}?since=${since}`;
+async function getRepositories(language = 'all', since = 'daily') {
+  const url = `${GITHUB_URL}/trending/${language}?since=${since}`;
   const { data: html } = await axios.get(url);
   const $ = cheerio.load(html);
   const repositories = $('.repo-list li')
@@ -13,7 +13,18 @@ async function getRepositories(language = 'javascript', since = 'daily') {
   return repositories;
 }
 
+async function getDevelopers(language = 'all', since = 'daily') {
+  const url = `${GITHUB_URL}/trending/developers/${language}?since=${since}`;
+  const { data: html } = await axios.get(url);
+  const $ = cheerio.load(html);
+  const developers = $('.explore-content li')
+    .get()
+    .map(dev => iterateDev($(dev)));
+  return developers;
+}
+
 exports.getRepositories = getRepositories;
+exports.getDevelopers = getDevelopers;
 
 function iterateRepo($repo) {
   const title = $repo
@@ -21,7 +32,7 @@ function iterateRepo($repo) {
     .text()
     .trim();
   const relativeUrl = $repo.find('h3 > a').attr('href');
-  const url = BASE_URL + relativeUrl;
+  const url = GITHUB_URL + relativeUrl;
   const description = $repo
     .find('.py-1 p')
     .text()
@@ -65,5 +76,44 @@ function iterateRepo($repo) {
     stars,
     currentPeriodStars,
     forks
+  };
+}
+
+function iterateDev($dev) {
+  const url = GITHUB_URL + $dev.find('.f3 a').attr('href');
+  const name = $dev
+    .find('.f3 a span')
+    .text()
+    .trim()
+    .replace(/[\(\)]/g, '');
+  $dev.find('.f3 a span').remove();
+  const username = $dev
+    .find('.f3 a')
+    .text()
+    .trim();
+  const avatar = $dev
+    .find('img')
+    .attr('src')
+    .replace(/\?s=.*$/, '');
+  const $repo = $dev.find('.repo-snipit');
+  const repoName = $repo
+    .find('.repo-snipit-name span.repo')
+    .text()
+    .trim();
+  const repoDesc = $repo
+    .find('.repo-snipit-description')
+    .text()
+    .trim();
+  const repoUrl = `${GITHUB_URL}${$repo.attr('href')}`;
+  return {
+    username,
+    name,
+    url,
+    avatar,
+    repo: {
+      name: repoName,
+      description: repoDesc,
+      url: repoUrl
+    }
   };
 }

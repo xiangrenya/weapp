@@ -1,6 +1,6 @@
 // 云函数入口文件
 const cloud = require('wx-server-sdk');
-const { getRepositories } = require('./get');
+const { getRepositories, getDevelopers } = require('./get');
 const { to } = require('./utils');
 
 cloud.init();
@@ -15,23 +15,21 @@ exports.main = async (event, context) => {
     since = 'daily'
   } = event;
   const cacheKey = `${type}::${language}::${since}`;
-  if (type === 'repositories') {
-    const [err1, content] = await to(getFreshCache(cacheKey));
-    if (err1) return console.log('错误：查询数据库缓存失败');
-    if (content) {
-      console.log('成功：数据来源于数据库缓存');
-      return content;
-    }
-
-    const [err2, repositories] = await to(getRepositories(language, since));
-    if (err2) return console.log('错误：爬虫 Github Trending 网页失败');
-
-    const [err3] = await to(insertCacheToDB(cacheKey, repositories));
-    if (err3) return console.log('错误：缓存插入数据库失败');
-    
-    console.log('成功：数据来源于 Github Trending 网页');
-    return repositories;
+  const [err1, content] = await to(getFreshCache(cacheKey));
+  if (err1) return console.log('错误：查询数据库缓存失败');
+  if (content) {
+    console.log('成功：数据来源于数据库缓存');
+    return content;
   }
+  const getData = type === 'repositories' ? getRepositories : getDevelopers;
+  const [err2, data] = await to(getData(language, since));
+  if (err2) return console.log('错误：爬虫 Github Trending 网页失败');
+
+  const [err3] = await to(insertCacheToDB(cacheKey, data));
+  if (err3) return console.log('错误：缓存插入数据库失败');
+
+  console.log('成功：数据来源于 Github Trending 网页');
+  return data;
 };
 
 function getFreshCache(cacheKey) {

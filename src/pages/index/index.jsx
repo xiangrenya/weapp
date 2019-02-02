@@ -31,18 +31,17 @@ class Index extends Component {
 
   componentDidHide() {}
 
-  handlePickerChange = (since, language) => {
-    this.props.trendingStore.initData(since, language);
+  handlePickerChange = (language, since) => {
+    this.props.trendingStore.refresh(language, since);
+  };
+
+  handleSwitchTab = value => {
+    this.props.trendingStore.handleSwitchTab(value);
   };
 
   render() {
     const {
-      trendingStore: {
-        current,
-        since,
-        repositories,
-        handleSwitchTab
-      }
+      trendingStore: { current, since, repositories, developers }
     } = this.props;
     return (
       <View className="index">
@@ -51,13 +50,13 @@ class Index extends Component {
           animated={true}
           current={current}
           tabList={[{ title: 'Repositories' }, { title: 'Developers' }]}
-          onClick={handleSwitchTab}
+          onClick={this.handleSwitchTab}
         >
           <AtTabsPane current={current} index={0}>
             <IndexList type={0} list={repositories.toJS()} since={since} />
           </AtTabsPane>
           <AtTabsPane current={current} index={1}>
-            {<IndexList type={1} list={[]} since={since} />}
+            {<IndexList type={1} list={developers.toJS()} since={since} />}
           </AtTabsPane>
         </AtTabs>
         <Range onChange={this.handlePickerChange} />

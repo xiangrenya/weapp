@@ -31,13 +31,13 @@ export default class RepoItem extends Component {
     const { range } = this.state;
     const [dateRanges, languages] = range;
     const [dateRangeIndex, languageIndex] = e.detail.value;
-    const dateRange = dateRanges[dateRangeIndex];
     const language = languages[languageIndex];
+    const dateRange = dateRanges[dateRangeIndex];
     this.setState({
-      dateRange,
-      language
+      language,
+      dateRange
     });
-    this.props.onChange(dateRange.value, language.value);
+    this.props.onChange(language.value, dateRange.value);
   };
 
   render() {

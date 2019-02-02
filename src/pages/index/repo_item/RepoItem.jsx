@@ -47,7 +47,7 @@ export default class RepoItem extends Component {
           <View className="number-item">
             <AtIcon
               prefixClass="fa"
-              value="share-alt"
+              value="code-fork"
               size="14"
               color="#666666"
             />

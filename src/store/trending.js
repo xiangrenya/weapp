@@ -1,26 +1,36 @@
 import Taro from '@tarojs/taro';
-import { observable, action } from 'mobx';
+import { observable, action, computed } from 'mobx';
 
 class Trending {
-  @observable current = 0;
-  @observable repositories = [];
+  @observable type = 'repositories';
+  @observable language = 'all';
   @observable since = 'daily';
+  @observable repositories = [];
+  @observable developers = [];
+
+  @computed get current() {
+    return this.type === 'repositories' ? 0 : 1;
+  }
+
   @action
-  initData = (since, language) => {
-    this.since = since;
+  initData = () => {
     Taro.showLoading({ title: 'loading...' });
     wx.cloud
       .callFunction({
         name: 'getTrending',
         data: {
-          type: 'repositories',
-          language: language,
-          since: since
+          type: this.type,
+          language: this.language,
+          since: this.since
         }
       })
       .then(
         action(res => {
-          this.repositories = res.result;
+          if (this.type === 'repositories') {
+            this.repositories = res.result;
+          } else {
+            this.developers = res.result;
+          }
           Taro.hideLoading();
         })
       )
@@ -30,9 +40,16 @@ class Trending {
       });
   };
 
+  @action refresh(language, since) {
+    this.language = language;
+    this.since = since;
+    this.initData();
+  }
+
   @action
   handleSwitchTab = val => {
-    this.current = val;
+    this.type = val ? 'developers' : 'repositories';
+    this.initData();
   };
 }
 
