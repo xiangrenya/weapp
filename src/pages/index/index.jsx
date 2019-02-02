@@ -1,9 +1,9 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text } from '@tarojs/components';
 import { observer, inject } from '@tarojs/mobx';
-import { AtTabs, AtTabsPane, AtSearchBar } from 'taro-ui';
-import IndexList from '../../components/index/IndexList';
-import Range from '../../components/index/Range';
+import { AtTabs, AtTabsPane } from 'taro-ui';
+import IndexList from './index_list/IndexList';
+import Range from './range/Range';
 import './index.less';
 
 @inject('trendingStore')

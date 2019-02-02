@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro';
 import PropTypes from 'prop-types';
 import { View } from '@tarojs/components';
-import RepoItem from './RepoItem';
+import RepoItem from '../repo_item/RepoItem';
 
 export default class IndexList extends Component {
   static propTypes = {
