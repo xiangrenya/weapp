@@ -17,7 +17,7 @@ class Trending {
 
   @action
   initData = async () => {
-    Taro.showLoading({ title: 'loading...' });
+    Taro.showLoading({ title: '正在加载中...' });
 
     const [err, res] = await to(
       wx.cloud.callFunction({

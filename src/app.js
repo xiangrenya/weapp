@@ -19,7 +19,7 @@ const store = {
 
 class App extends Component {
   config = {
-    pages: ['pages/trending/index', 'pages/activity/index', 'pages/me/index'],
+    pages: ['pages/trending/index', 'pages/activity/index', 'pages/my/index', 'pages/login/index'],
     window: {
       backgroundTextStyle: 'dark',
       navigationBarBackgroundColor: '#fff',
@@ -30,19 +30,19 @@ class App extends Component {
       list: [
         {
           pagePath: 'pages/trending/index',
-          text: 'Trending',
+          text: '排行',
           iconPath: './assets/images/tab_trending.png',
           selectedIconPath: './assets/images/tab_trending_selected.png'
         },
         {
           pagePath: 'pages/activity/index',
-          text: 'Activity',
+          text: '动态',
           iconPath: './assets/images/tab_activity.png',
           selectedIconPath: './assets/images/tab_activity_selected.png'
         },
         {
-          pagePath: 'pages/me/index',
-          text: 'Me',
+          pagePath: 'pages/my/index',
+          text: '我的',
           iconPath: './assets/images/tab_me.png',
           selectedIconPath: './assets/images/tab_me_selected.png'
         }
@@ -54,7 +54,9 @@ class App extends Component {
     }
   };
 
-  componentDidMount() {}
+  componentDidMount() {
+    wx.cloud.init();
+  }
 
   componentDidShow() {}
 

@@ -1,3 +1,5 @@
+import { all } from "any-promise";
+
 const langs = [
   'All',
   'Java',
@@ -494,6 +496,12 @@ const langs = [
 ];
 
 export const languages = langs.map(name => {
+  if(name==='All'){
+    return {
+      name: '所有',
+      value: 'all'
+    }
+  }
   const value = name
     .toLowerCase()
     .replace(' ', '-')
@@ -505,7 +513,7 @@ export const languages = langs.map(name => {
 });
 
 export const dateRanges = [
-  { name: 'Today', value: 'daily' },
-  { name: 'Week', value: 'weekly' },
-  { name: 'Month', value: 'monthly' }
+  { name: '今日', value: 'daily' },
+  { name: '本周', value: 'weekly' },
+  { name: '本月', value: 'monthly' }
 ];

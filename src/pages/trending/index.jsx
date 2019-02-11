@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text } from '@tarojs/components';
 import { observer, inject } from '@tarojs/mobx';
-import { AtTabs, AtTabsPane } from 'taro-ui';
+import { AtTabs, AtTabsPane, AtSearchBar } from 'taro-ui';
 import TrendingList from './trending_list/TrendingList';
 import Range from './range/Range';
 import './index.less';
@@ -10,26 +10,13 @@ import './index.less';
 @observer
 class Index extends Component {
   config = {
-    navigationBarTitleText: 'Trending',
+    navigationBarTitleText: '排行',
     enablePullDownRefresh: true
   };
 
-  componentWillMount() {}
-
-  componentWillReact() {
-    console.log('componentWillReact');
-  }
-
   componentDidMount() {
-    wx.cloud.init();
     this.props.trendingStore.initData('daily', 'all');
   }
-
-  componentWillUnmount() {}
-
-  componentDidShow() {}
-
-  componentDidHide() {}
 
   onPullDownRefresh() {
     this.props.trendingStore.initData();
@@ -43,17 +30,35 @@ class Index extends Component {
     this.props.trendingStore.handleSwitchTab(value);
   };
 
+  handleSearch = () => {
+    Taro.navigateTo({
+      url: '/pages/search/index'
+    });
+  };
+
   render() {
     const {
       trendingStore: { current, since, repositories, developers }
     } = this.props;
     return (
       <View className="index">
+        <View className="trending-top">
+          <View className="filter">
+            <Range onChange={this.handlePickerChange} />
+          </View>
+          <View className="search-wrap">
+            <AtSearchBar
+              disabled={true}
+              placeholder="Search"
+              onClick={this.handleSearch}
+            />
+          </View>
+        </View>
         <AtTabs
           swipeable={false}
           animated={true}
           current={current}
-          tabList={[{ title: 'Repositories' }, { title: 'Developers' }]}
+          tabList={[{ title: '项目' }, { title: '开发者' }]}
           onClick={this.handleSwitchTab}
         >
           <AtTabsPane current={current} index={0}>
@@ -63,7 +68,6 @@ class Index extends Component {
             <TrendingList type={1} list={developers.toJS()} since={since} />
           </AtTabsPane>
         </AtTabs>
-        <Range onChange={this.handlePickerChange} />
       </View>
     );
   }

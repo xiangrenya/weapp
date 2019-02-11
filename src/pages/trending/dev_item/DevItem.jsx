@@ -22,7 +22,7 @@ export default class devdev extends Component {
         <View className="user-info">
           <View className="user-name">{dev.username}</View>
           <View className="repo">
-            <AtIcon prefixClass="fa" value="folder-o" size="14" color="#666" />
+            <AtIcon prefixClass="fa" value="folder-o" size="12" color="#666" />
             <View className="repo-title">{dev.repo.name}</View>
           </View>
           <View className="repo-desc">{dev.repo.description}</View>

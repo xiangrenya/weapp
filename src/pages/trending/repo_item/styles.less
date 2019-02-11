@@ -1,20 +1,19 @@
 .content {
   display: flex;
   flex-direction: column;
-  margin: 25px 20px;
+  margin: 30px;
   background-color: #fff;
-  border-radius: 10px;
+  border-radius: 8px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.05);
   padding: 20px;
 }
 
 .repo-title {
   color: #6190E8;
-  font-size: 34px;
+  font-size: 32px;
   margin-bottom: 10px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
 }
 
 .repo-desc {
@@ -24,6 +23,7 @@
 }
 
 .today-view {
+  margin-left: auto;
   display: flex;
   align-items: center;
   .today-title {
@@ -38,7 +38,7 @@
   align-items: center;
   margin-bottom: 10px;
   .number-item {
-    width: 33.333333%;
+    width: 25%;
     display: flex;
     align-items: center;
     .number-title {

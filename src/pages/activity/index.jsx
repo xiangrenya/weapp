@@ -7,7 +7,7 @@ import './index.less';
 @observer
 class Index extends Component {
   config = {
-    navigationBarTitleText: 'Trending',
+    navigationBarTitleText: '动态',
     enablePullDownRefresh: true
   };
 

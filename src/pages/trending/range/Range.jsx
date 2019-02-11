@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro';
 import PropTypes from 'prop-types';
 import { View } from '@tarojs/components';
+import { AtIcon } from 'taro-ui';
 import { dateRanges, languages } from '../../../utils/dict';
 import './styles.less';
 
@@ -17,11 +18,11 @@ export default class RepoItem extends Component {
 
   state = {
     dateRange: {
-      name: 'Today',
+      name: '今日',
       value: 'daily'
     },
     language: {
-      name: 'All',
+      name: '所有',
       urlParam: ''
     },
     range: [dateRanges, languages]
@@ -50,9 +51,12 @@ export default class RepoItem extends Component {
           rangeKey={'name'}
           onChange={this.onChange}
         >
-          <View className="filter">
+          {/* <View className="filter">
             <Text className="date-range">{dateRange.name}</Text>
             <Text className="language">{language.name}</Text>
+          </View> */}
+          <View className="filter-wrap">
+            <AtIcon prefixClass="fa" value="filter" size="16" color="#999999" />
           </View>
         </Picker>
       </View>
