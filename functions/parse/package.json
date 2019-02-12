@@ -1,0 +1,13 @@
+{
+  "name": "parse",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "towxml": "^2.1.4",
+    "wx-server-sdk": "^0.1.4"
+  }
+}

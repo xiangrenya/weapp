@@ -93,7 +93,22 @@ wx.cloud.callFunction({
 默认小程序只支持 `es6` 的语法，为了使用 `async/await` 语法，我们需要用 `regenerator-runtime` (
 Standalone runtime for Regenerator-compiled generator and async functions)。
 
-首先下载 [runtime.js](https://github.com/facebook/regenerator/tree/master/packages/regenerator-runtime)，放到项目中，如 `utils/runtime.js` 。然后在需要使用 `async/await` 语法的地方，导入 `regeneratorRuntime` 模块，如 `const regeneratorRuntime = require('../utils/runtime');`，注意不要用 `import regeneratorRuntime from '../utils/runtime' ` 会报错。
+首先下载 [runtime.js](https://github.com/facebook/regenerator/tree/master/packages/regenerator-runtime)，放到项目中，如 `utils/runtime.js` 。然后在需要使用 `async/await` 语法的地方，导入 `regeneratorRuntime` 模块，如 `const regeneratorRuntime = require('../utils/runtime');`，注意不要  用 `import regeneratorRuntime from '../utils/runtime'` 会报错。
+
+## 异步编程
+
+Taro 支持使用 async functions 来让开发者获得不错的异步编程体验，开启 async functions 支持需要安装包 @tarojs/async-await
+
+```bash
+npm install --save @tarojs/async-await
+```
+
+随后在项目入口文件 app.js 中直接 import ，就可以开始使用 async functions 功能了
+
+```javascript
+// src/app.js
+import '@tarojs/async-await';
+```
 
 ## 注意事项
 

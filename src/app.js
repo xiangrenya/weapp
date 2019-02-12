@@ -1,5 +1,6 @@
 import Taro, { Component } from '@tarojs/taro';
 import { Provider } from '@tarojs/mobx';
+import '@tarojs/async-await'
 import Index from './pages/index';
 
 import trendingStore from './store/trending';
@@ -19,7 +20,13 @@ const store = {
 
 class App extends Component {
   config = {
-    pages: ['pages/trending/index', 'pages/activity/index', 'pages/my/index', 'pages/login/index'],
+    pages: [
+      'pages/trending/index',
+      'pages/activity/index',
+      'pages/my/index',
+      'pages/login/index',
+      'pages/repo/index'
+    ],
     window: {
       backgroundTextStyle: 'dark',
       navigationBarBackgroundColor: '#fff',

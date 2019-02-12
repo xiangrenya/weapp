@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro';
 import PropTypes from 'prop-types';
-import { View } from '@tarojs/components';
+import { View, Navigator } from '@tarojs/components';
 import { AtIcon } from 'taro-ui';
 import { toThousands } from '../../../utils/index';
 import './styles.less';
@@ -25,7 +25,9 @@ export default class RepoItem extends Component {
       monthly: '本月'
     };
     const [author, repoName] = repo.title.split(' / ');
+    const url = `/pages/repo/index?owner=${author}&repo=${repoName}`;
     return (
+      <Navigator open-type="navigate" hover-class="none" url={url}>
       <View className="content">
         <View className="repo-title">
           {repoName}
@@ -67,6 +69,7 @@ export default class RepoItem extends Component {
           </View>
         </View>
       </View>
+      </Navigator>
     );
   }
 }

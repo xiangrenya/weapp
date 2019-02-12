@@ -1,8 +1,6 @@
 import Taro from '@tarojs/taro';
 import { observable, action, computed } from 'mobx';
 import { to } from '../utils/index';
-// support es7 async/await
-const regeneratorRuntime = require('../utils/runtime');
 
 class Trending {
   @observable type = 'repositories';
