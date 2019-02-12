@@ -3,6 +3,7 @@ import { Form, Input, Button, View, Text } from '@tarojs/components';
 import { observer, inject } from '@tarojs/mobx';
 import { AtIcon, AtButton } from 'taro-ui';
 import base64 from '../../utils/base64';
+import ajax from '../../utils/ajax';
 import './index.less';
 
 @observer
@@ -46,11 +47,8 @@ class Index extends Component {
     Taro.setStorageSync('authorization', authorization);
 
     // 验证用户名和密码是否正确
-    Taro.request({
-      url: 'https://api.github.com/user',
-      header: {
-        Authorization: authorization
-      }
+    ajax({
+      url: '/user'
     }).then(res => {
       console.log(res);
       if (res.statusCode === 401) {

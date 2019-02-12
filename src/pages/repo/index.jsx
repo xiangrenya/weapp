@@ -1,9 +1,10 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Image, Button, Text } from '@tarojs/components';
-import { AtIcon, AtAvatar, AtButton } from 'taro-ui';
+import { AtIcon, AtAvatar, AtButton, AtMessage } from 'taro-ui';
 import Markdown from '../../components/markdown/Markdown';
 import Action from './action/Action';
 import base64 from '../../utils/base64';
+import ajax from '../../utils/ajax';
 import './index.less';
 
 class Index extends Component {
@@ -13,6 +14,12 @@ class Index extends Component {
 
   state = {
     repo: null,
+    owner: {
+      avatar_url: '',
+      login: '',
+      followers: 0,
+      following: 0
+    },
     baseUrl: '',
     md: ''
   };
@@ -23,6 +30,7 @@ class Index extends Component {
     });
     const { owner, repo } = this.$router.params;
 
+    this.getUser(owner);
     this.getRepo(owner, repo);
     this.getReadme(owner, repo);
 
@@ -31,12 +39,28 @@ class Index extends Component {
     });
   }
 
+  onShareAppMessage(options) {
+    const { owner, repo } = this.state;
+    let path = `/pages/repo/index?owner=${owner}&repo=${repo}`;
+    return {
+      title: repo.name + (repo.description ? ` - ${repo.description}` : ''),
+      path
+    };
+  }
+
+  getUser = owner => {
+    ajax({
+      url: `/users/${owner}`
+    }).then(res => {
+      this.setState({
+        owner: res.data
+      });
+    });
+  };
+
   getRepo = (owner, repo) => {
-    Taro.request({
-      url: `https://api.github.com/repos/${owner}/${repo}`,
-      header: {
-        Authorization: Taro.getStorageSync('authorization')
-      }
+    ajax({
+      url: `/repos/${owner}/${repo}`
     }).then(res => {
       console.log('repo: ', res.data);
       this.setState({
@@ -47,11 +71,8 @@ class Index extends Component {
   };
 
   getReadme = (owner, repo) => {
-    Taro.request({
-      url: `https://api.github.com/repos/${owner}/${repo}/readme`,
-      header: {
-        Authorization: Taro.getStorageSync('authorization')
-      }
+    ajax({
+      url: `/repos/${owner}/${repo}/readme`
     }).then(res => {
       console.log('readme: ', res.data);
       this.setState({
@@ -61,14 +82,20 @@ class Index extends Component {
   };
 
   render() {
-    const { repo, baseUrl, md } = this.state;
+    const { repo, owner, baseUrl, md } = this.state;
     if (!repo) return null;
-    const { avatar_url, login } = repo.owner;
+    const { avatar_url, login, followers, following } = owner;
     return (
       <View className="repo-container">
         <View className="repo-owner">
           <AtAvatar className="avatar" image={avatar_url} size="normal" />
-          <Text className="owner-name">{login}</Text>
+          <View className="owner-text">
+            <View className="owner-name">{login}</View>
+            <View className="owner-meta">
+              关注 <Text className="num">{following}</Text> 粉丝{' '}
+              <Text class="num">{followers}</Text>
+            </View>
+          </View>
           <AtButton className="watch" type="primary" size="small">
             + 关注
           </AtButton>
@@ -115,8 +142,9 @@ class Index extends Component {
             {md && <Markdown md={md} base={baseUrl} />}
           </View>
         </View>
-
+        
         <Action repo={repo} />
+        <AtMessage />
       </View>
     );
   }
