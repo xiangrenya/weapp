@@ -1,68 +1,56 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Image, Button, Text } from '@tarojs/components';
 import { observer, inject } from '@tarojs/mobx';
-import { AtIcon, AtButton, AtModal } from 'taro-ui';
+import { AtIcon, AtButton } from 'taro-ui';
 import './index.less';
 
 @observer
 class Index extends Component {
   config = {
-    navigationBarTitleText: '我的'
+    navigationBarTitleText: '系统设置'
   };
 
   state = {
-    user: null,
-    isLoggedIn: false
+    user: {}
   };
 
-  componentDidMount() {
-    if (Taro.getStorageSync('authorization')) {
-      this.setState({
-        isLoggedIn: true,
-        user: Taro.getStorageSync('user')
-      });
-    }
+  componentWillMount() {}
+
+  componentWillReact() {
+    console.log('componentWillReact');
   }
 
-  refresh = () => {
+  componentDidMount() {
+    const user = Taro.getStorageSync('user');
+    if (!user) {
+      Taro.navigateTo({
+        url: '/pages/login/index'
+      });
+      return;
+    }
     this.setState({
-      isLoggedIn: !!Taro.getStorageSync('authorization'),
-      user: Taro.getStorageSync('user')
+      user
     });
-  };
+  }
 
-  handleExit = () => {
-    Taro.clearStorage({
-      success: () => {
-        this.refresh();
-      }
-    });
-  };
+  componentWillUnmount() {}
 
-  handleConfirm = () => {
-    Taro.navigateTo({
-      url: '/pages/login/index'
-    });
-  };
+  componentDidShow() {}
+
+  componentDidHide() {}
 
   render() {
-    const { user, isLoggedIn } = this.state;
-    if (!isLoggedIn)
-      return (
-        <View className="modal-wrap">
-          <AtModal
-            isOpened
-            confirmText="确认"
-            onConfirm={this.handleConfirm}
-            content="请您先登录，才能看到个人信息"
-          />
-        </View>
-      );
-    if (!user) return null;
-    const { avatar_url, name, followers, following } = user;
+    const { user } = this.state;
+    const {
+      avatar_url,
+      name,
+      followers,
+      following,
+      public_repos,
+      public_gists
+    } = user;
     return (
       <View className="my-container">
-        <View className="my-header">
           <Image className="avatar" mode="aspectFill" src={avatar_url} />
           <View class="my-info">
             <View class="username">{name}</View>
@@ -75,9 +63,9 @@ class Index extends Component {
               </Text>
             </View>
           </View>
-          <AtButton type="primary" size="small">
+          <Button type="primary" size="mini">
             关注
-          </AtButton>
+          </Button>
         </View>
         <View className="my-list">
           <View className="my-item">
@@ -129,15 +117,6 @@ class Index extends Component {
         <View className="my-list">
           <View className="my-item">
             <Text class="title">系统设置</Text>
-            <AtIcon
-              prefixClass="fa"
-              value="angle-right"
-              size="14"
-              color="#666666"
-            />
-          </View>
-          <View className="my-item" onClick={this.handleExit}>
-            <Text class="title">退出登录</Text>
             <AtIcon
               prefixClass="fa"
               value="angle-right"

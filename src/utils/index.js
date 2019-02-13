@@ -1,3 +1,5 @@
+import Taro from '@tarojs/taro';
+
 export function toThousands(num) {
   if (typeof num === 'number') {
     num = num.toString();
@@ -20,4 +22,8 @@ export function to(promise) {
       console.log(err);
       return [err, null];
     });
+}
+
+export function hasLogin() {
+  return !!Taro.getStorageSync('authorization');
 }

@@ -16,9 +16,9 @@ class Index extends Component {
 
   componentDidMount() {
     this.props.trendingStore.initData('daily', 'all');
-    Taro.navigateTo({
-      url: '/pages/repo/index?owner=pomber&repo=git-history'
-    });
+    // Taro.navigateTo({
+    //   url: '/pages/my/index?owner=pomber&repo=git-history'
+    // });
   }
 
   onPullDownRefresh() {

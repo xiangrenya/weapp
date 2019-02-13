@@ -1,10 +1,11 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Image, Button, Text } from '@tarojs/components';
-import { AtIcon, AtAvatar, AtButton, AtMessage } from 'taro-ui';
+import { AtIcon, AtAvatar, AtButton } from 'taro-ui';
 import Markdown from '../../components/markdown/Markdown';
 import Action from './action/Action';
 import base64 from '../../utils/base64';
 import ajax from '../../utils/ajax';
+import User from './user/User';
 import './index.less';
 
 class Index extends Component {
@@ -13,6 +14,7 @@ class Index extends Component {
   };
 
   state = {
+    isOpend: false,
     repo: null,
     owner: {
       avatar_url: '',
@@ -82,24 +84,11 @@ class Index extends Component {
   };
 
   render() {
-    const { repo, owner, baseUrl, md } = this.state;
+    const { repo, owner, baseUrl, md, isOpened } = this.state;
     if (!repo) return null;
-    const { avatar_url, login, followers, following } = owner;
     return (
       <View className="repo-container">
-        <View className="repo-owner">
-          <AtAvatar className="avatar" image={avatar_url} size="normal" />
-          <View className="owner-text">
-            <View className="owner-name">{login}</View>
-            <View className="owner-meta">
-              关注 <Text className="num">{following}</Text> 粉丝{' '}
-              <Text class="num">{followers}</Text>
-            </View>
-          </View>
-          <AtButton className="watch" type="primary" size="small">
-            + 关注
-          </AtButton>
-        </View>
+        <User info={owner} />
 
         <View className="repo-header">
           <View className="repo-title">{repo.name}</View>
@@ -142,9 +131,8 @@ class Index extends Component {
             {md && <Markdown md={md} base={baseUrl} />}
           </View>
         </View>
-        
+
         <Action repo={repo} />
-        <AtMessage />
       </View>
     );
   }

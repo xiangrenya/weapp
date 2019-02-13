@@ -16,11 +16,17 @@ export default class RepoItem extends Component {
   };
 
   state = {
-    isStarred: false
+    isStarred: false,
+    isWatched: false,
+    isForked: false
   };
 
   componentDidMount() {
-    this.checkStarred();
+    if (Taro.getStorageSync('user')) {
+      this.checkStarred();
+      this.checkWatched();
+      this.checkForked();
+    }
   }
 
   checkStarred = () => {
@@ -37,27 +43,114 @@ export default class RepoItem extends Component {
     });
   };
 
-  handleClick = type => {
+  checkWatched = () => {
     const { repo } = this.props;
-    if (type === 'watch') {
-    } else if (type === 'star') {
-      const { isStarred } = this.state;
-      const method = isStarred ? 'DELETE' : 'PUT';
-      ajax({
-        method,
-        url: `/user/starred/${repo.owner.login}/${repo.name}`
-      }).then(res => {
-        if (res.statusCode === 204) {
+    ajax({
+      method: 'get',
+      url: `/user/subscriptions/${repo.owner.login}/${repo.name}`
+    }).then(res => {
+      if (res.statusCode === 204) {
+        this.setState({
+          isWatched: true
+        });
+      }
+    });
+  };
+
+  checkForked = () => {
+    const { owner, name } = this.props.repo;
+    ajax({
+      method: 'get',
+      url: `/repos/${owner.login}/${name}/forks`
+    }).then(res => {
+      if (res.statusCode === 200) {
+        const curUser = Taro.getStorageSync('user');
+        if (res.data.some(item => item.owner.login === curUser.login)) {
           this.setState({
-            isStarred: !this.state.isStarred
+            isForked: true
           });
         }
-        Taro.atMessage({
-          message: isStarred ? '取消收藏成功' : '收藏成功',
-          type: 'success'
-        });
-      });
+      }
+    });
+  };
+
+  handleClick = type => {
+    const { repo } = this.props;
+    const ownerName = repo.owner.login;
+    const repoName = repo.name;
+    switch (type) {
+      case 'watch':
+        this.watch(ownerName, repoName);
+        break;
+      case 'star':
+        this.star(ownerName, repoName);
+        break;
+      case 'folk':
+        this.folk(ownerName, repoName);
+        break;
+      default:
+        break;
     }
+  };
+
+  watch = (owner, repo) => {
+    const { isWatched } = this.state;
+    const method = isWatched ? 'DELETE' : 'PUT';
+    ajax({
+      method,
+      url: `/user/subscriptions/${owner}/${repo}`
+    }).then(res => {
+      if (res.statusCode === 204) {
+        this.setState({
+          isWatched: !this.state.isWatched
+        });
+        Taro.showToast({
+          title: isWatched ? '取消关注' : '关注成功'
+        });
+      }
+    });
+  };
+
+  star = (owner, repo) => {
+    const { isStarred } = this.state;
+    const method = isStarred ? 'DELETE' : 'PUT';
+    ajax({
+      method,
+      url: `/user/starred/${owner}/${repo}`
+    }).then(res => {
+      if (res.statusCode === 204) {
+        this.setState({
+          isStarred: !this.state.isStarred
+        });
+        Taro.showToast({
+          title: isStarred ? '取消收藏' : '收藏成功'
+        });
+      }
+    });
+  };
+
+  folk = (owner, repo) => {
+    const isForked = this.state.isForked;
+    if (isForked) {
+      Taro.showToast({
+        title: '您之前复制过，请不要重复复制',
+        icon: 'none'
+      });
+      return;
+    }
+    ajax({
+      method: 'POST',
+      url: `/repos/${owner}/${repo}/forks`
+    }).then(res => {
+      if (res.statusCode === 202) {
+        this.setState({
+          isForked: true
+        });
+        Taro.showToast({
+          title: '复制成功'
+        });
+      }
+    });
   };
 
   render() {
@@ -65,16 +158,26 @@ export default class RepoItem extends Component {
       return null;
     }
     const { watchers_count, stargazers_count, forks_count } = this.props.repo;
-    const { isStarred } = this.state;
+    const { isStarred, isWatched, isForked } = this.state;
     const iconStar = isStarred ? 'star' : 'star-o';
     return (
       <View className="action-container">
         <View className="action-item" onClick={() => this.handleClick('watch')}>
-          <AtIcon prefixClass="fa" value="eye" size="14" color="#999999" />
+          <AtIcon
+            prefixClass="fa"
+            value="eye"
+            size="14"
+            color={isWatched ? '#5c89e4' : '#999'}
+          />
           <Text className="number">关注 {toThousands(watchers_count)}</Text>
         </View>
         <View className="action-item" onClick={() => this.handleClick('star')}>
-          <AtIcon prefixClass="fa" value={iconStar} size="14" color="#999999" />
+          <AtIcon
+            prefixClass="fa"
+            value={iconStar}
+            size="14"
+            color={isStarred ? '#5c89e4' : '#999'}
+          />
           <Text className="number">收藏 {toThousands(stargazers_count)}</Text>
         </View>
         <View className="action-item" onClick={() => this.handleClick('folk')}>
@@ -82,7 +185,7 @@ export default class RepoItem extends Component {
             prefixClass="fa"
             value="code-fork"
             size="14"
-            color="#999999"
+            color={isForked ? '#5c89e4' : '#999'}
           />
           <Text className="number">复制 {toThousands(forks_count)}</Text>
         </View>

@@ -16,6 +16,8 @@ class Index extends Component {
     isBusy: false
   };
 
+  componentDidMount() {}
+
   onSubmit = e => {
     const formData = e.detail.value;
     console.log('formData: ', formData);
@@ -58,8 +60,14 @@ class Index extends Component {
         });
       } else {
         Taro.setStorageSync('user', res.data);
-        Taro.switchTab({
-          url: '/pages/my/index'
+        Taro.navigateBack({
+          success: () => {
+            const pages = getCurrentPages(); // 当前页面
+            const beforePage = pages[pages.length - 1];
+            if (beforePage.$component.refresh) {
+              beforePage.$component.refresh();
+            }
+          }
         });
       }
       this.setState({
