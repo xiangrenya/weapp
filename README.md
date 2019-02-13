@@ -126,12 +126,25 @@ button {
 }
 ```
 
+### 如何在返回前一个页面时，执行前一个页面的方法？
+
+```javascript
+Taro.navigateBack({
+  success: () => {
+    const pages = getCurrentPages(); // 当前页面
+    const beforePage = pages[pages.length - 1];
+    if (beforePage.$component.refresh) {
+      beforePage.$component.refresh();
+    }
+  }
+});
+```
+
 `parseInt('2,2222') === 2`
 
 ## 设计
 
 主题色：#5c89e4
-
 
 ## 目前实现的功能有：
 
@@ -145,7 +158,7 @@ button {
 - [ ] 问题列表
 - [x] 我的
 - [x] 仓库的关注、收藏、复制、分享
-- [x] 用户的关注 
+- [x] 用户的关注
 - [x] `README.md` 展示（样式还需要优化）
 - [ ] 查看源码
 
