@@ -128,16 +128,17 @@ button {
 
 ### 如何在返回前一个页面时，执行前一个页面的方法？
 
+背景：在我的页面下，导航至登录页后，在退回到我的页面，需要重新渲染数据，但是默认退回，是没有任何反应的。由于每次页面打开都会触发 `componentDidShow` 生命周期内，可以在其中判断逻辑。
+
 ```javascript
-Taro.navigateBack({
-  success: () => {
-    const pages = getCurrentPages(); // 当前页面
-    const beforePage = pages[pages.length - 1];
-    if (beforePage.$component.refresh) {
-      beforePage.$component.refresh();
-    }
+componentDidShow() {
+  if (!this.state.isLoggedIn && Taro.getStorageSync('authorization')) {
+    this.setState({
+      isLoggedIn: true,
+      user: Taro.getStorageSync('user')
+    });
   }
-});
+}
 ```
 
 `parseInt('2,2222') === 2`

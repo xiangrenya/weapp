@@ -60,15 +60,7 @@ class Index extends Component {
         });
       } else {
         Taro.setStorageSync('user', res.data);
-        Taro.navigateBack({
-          success: () => {
-            const pages = getCurrentPages(); // 当前页面
-            const beforePage = pages[pages.length - 1];
-            if (beforePage.$component.refresh) {
-              beforePage.$component.refresh();
-            }
-          }
-        });
+        Taro.navigateBack();
       }
       this.setState({
         isBusy: false
@@ -82,8 +74,18 @@ class Index extends Component {
       <View className="login-container">
         <AtIcon prefixClass="fa" value="github" size="60" />
         <Form onSubmit={this.onSubmit} className="login-form">
-          <Input name="username" placeholder="用户名" autoFocus={true} />
-          <Input name="password" type="password" placeholder="密码" />
+          <Input
+            name="username"
+            placeholder="用户名"
+            autoFocus={true}
+            value="xiangrenya"
+          />
+          <Input
+            name="password"
+            type="password"
+            placeholder="密码"
+            value="xiangrenya19910407"
+          />
           <Button
             form-type="submit"
             type="primary"

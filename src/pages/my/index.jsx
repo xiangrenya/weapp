@@ -24,6 +24,15 @@ class Index extends Component {
     }
   }
 
+  componentDidShow() {
+    if (!this.state.isLoggedIn && Taro.getStorageSync('authorization')) {
+      this.setState({
+        isLoggedIn: true,
+        user: Taro.getStorageSync('user')
+      });
+    }
+  }
+
   refresh = () => {
     this.setState({
       isLoggedIn: !!Taro.getStorageSync('authorization'),

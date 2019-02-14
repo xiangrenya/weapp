@@ -41,12 +41,12 @@ class App extends Component {
           iconPath: './assets/images/tab_trending.png',
           selectedIconPath: './assets/images/tab_trending_selected.png'
         },
-        {
-          pagePath: 'pages/activity/index',
-          text: '动态',
-          iconPath: './assets/images/tab_activity.png',
-          selectedIconPath: './assets/images/tab_activity_selected.png'
-        },
+        // {
+        //   pagePath: 'pages/activity/index',
+        //   text: '动态',
+        //   iconPath: './assets/images/tab_activity.png',
+        //   selectedIconPath: './assets/images/tab_activity_selected.png'
+        // },
         {
           pagePath: 'pages/my/index',
           text: '我的',
